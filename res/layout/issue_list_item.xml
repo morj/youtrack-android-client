@@ -7,6 +7,12 @@
     <LinearLayout
             a:layout_width="fill_parent"
             a:layout_height="wrap_content">
+        <CheckBox a:id="@+id/issueSelected"
+                  a:checked="false"
+                  a:layout_height="wrap_content"
+                  a:layout_width="wrap_content"
+                  a:layout_gravity="center"
+                  />
         <TextView a:id="@+id/issue_id"
                   a:text="ID-123"
                   a:textSize="20dp"

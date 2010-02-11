@@ -23,21 +23,23 @@ public class YouTrackActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
 //        setListAdapter(new ArrayAdapter<String>(this, R.layout.issue_list_item, new String[]{"first", "second", "third"}));
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
         for (Issue issue: Issue.getSampleData()) {
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, Object> map = new HashMap<String, Object>();
             data.add(map);
             map.put("issue_id", issue.getId());
             map.put("summary", issue.getSummary());
             map.put("description", issue.getDescription());
+            map.put("selected", Boolean.FALSE);
         }
-        String[] from = new String[]{"issue_id", "summary", "description"};
-        int[] to = new int[]{R.id.issue_id, R.id.summary, R.id.description};
-        setListAdapter(new SimpleAdapter(this, data, R.layout.issue_list_item, from, to));
+        String[] from = new String[]{"issue_id", "summary", "description", "selected"};
+        int[] to = new int[]{R.id.issue_id, R.id.summary, R.id.description, R.id.issueSelected};
+        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
+        setListAdapter(adapter);
 
         ListView lv = getListView();
 //        lv.setTextFilterEnabled(true);
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 //           lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //               public void onItemClick(AdapterView<?> parent, View view,
