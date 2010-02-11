@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:a="http://schemas.android.com/apk/res/android"
+              a:orientation="vertical"
+              a:layout_width="fill_parent"
+              a:layout_height="fill_parent">
+    <LinearLayout
+            a:layout_width="fill_parent"
+            a:layout_height="wrap_content">
+        <TextView a:id="@+id/issue_id"
+                  a:text="ID-123"
+                  a:textSize="20dp"
+                  a:layout_height="fill_parent"
+                  a:layout_width="wrap_content"/>
+        <TextView a:id="@+id/summary"
+                  a:text="Summary"
+                  a:textSize="16dp"
+                  a:layout_height="fill_parent"
+                  a:layout_width="wrap_content"/>
+    </LinearLayout>
+    <TextView a:id="@+id/description"
+              a:text="Description"
+              a:textSize="12dp"
+              a:layout_width="fill_parent"
+              a:layout_height="wrap_content"/>
+</LinearLayout>
