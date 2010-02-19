@@ -1,14 +1,13 @@
 package jetbrains.android.client;
 
-import android.*;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
-import jetbrains.android.data.Issue;
+import jetbrains.android.data.RequestFailedException;
+import jetbrains.android.data.YouTrackDAO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,18 +15,20 @@ import java.util.List;
 import java.util.Map;
 
 public class YouTrackActivity extends ListActivity {
+    private static final String BASE_URI = "http://youtrack.jetbrains.net";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 //        setListAdapter(new ArrayAdapter<String>(this, R.layout.issue_list_item, new String[]{"first", "second", "third"}));
         final List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-        for (Issue issue : Issue.getSampleData()) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            data.add(map);
-            map.put("title", issue.getId() + " " + issue.getSummary());
-            map.put("description", issue.getDescription());
-            map.put("selected", Boolean.FALSE);
+        try {
+            YouTrackDAO dao = new YouTrackDAO();
+            dao.login(BASE_URI, "app_exception", "app_exception");
+            data.addAll(dao.getIssues("JT", "#unresolved", 0, 10));
+        } catch (RequestFailedException e) {
+            //TODO: Graceful handle
         }
         String[] from = new String[]{"title", "description"};
         int[] to = new int[]{R.id.title, R.id.description};
