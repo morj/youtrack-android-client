@@ -2,4 +2,7 @@
 <resources>
     <string name="hello">Hello World, Lop!</string>
     <string name="app_name">YouTRACK Client</string>
+    <string name="options">Options</string>
+    <string name="quit">Quit</string>
+    <string name="reports">Reports</string>
 </resources>

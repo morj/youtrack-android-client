@@ -2,9 +2,7 @@ package jetbrains.android.client;
 
 import android.app.ListActivity;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import jetbrains.android.data.RequestFailedException;
 import jetbrains.android.data.YouTrackDAO;
@@ -16,6 +14,20 @@ import java.util.Map;
 
 public class YouTrackActivity extends ListActivity {
     private static final String BASE_URI = "http://youtrack.jetbrains.net";
+    private View currentView = null;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        for (MenuItem item : MenuItem.values()) {
+            menu.add(Menu.NONE, item.id, item.order, item.titleId);
+        }
+        return super.onCreateOptionsMenu(menu);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
+        return super.onMenuItemSelected(featureId, item);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,51 +55,56 @@ public class YouTrackActivity extends ListActivity {
                 return true;
             }
         });
-        lv.setOnTouchListener(new View.OnTouchListener() {
+        /*lv.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return gestureDetector.onTouchEvent(motionEvent);
             }
-        });
+        });*/
 
-        lv.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            private View currentView = null;
+        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (view != currentView) {
-                    if (currentView != null) {
-                        getTitle(currentView).setLines(1);
-                        getDescription(currentView).setVisibility(View.GONE);
-                    }
 
-                    getTitle(view).setMaxLines(20);
-                    TextView desc = getDescription(view);
-                    desc.setVisibility(View.VISIBLE);
-                    if ("".equals(data.get(position).get("description"))) {
-                        desc.setText("<no description>");
-                    }
-
-                    currentView = view;
-                }
+                updateCurrentView(view, position, data);
             }
 
             public void onNothingSelected(AdapterView<?> adapterView) {
-                if (currentView != null) {
-                    getTitle(currentView).setLines(1);
-                    getDescription(currentView).setVisibility(View.GONE);
-                }
+                dismissCurrentView();
             }
-        });
+        };
+        lv.setOnItemSelectedListener(listener);
 //        lv.setTextFilterEnabled(true);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-//           lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//               public void onItemClick(AdapterView<?> parent, View view,
-//                                       int position, long id) {
-//                   // When clicked, show a toast with the TextView text
-//                   Toast.makeText(getApplicationContext(), ((TextView) view).getText(),
-//                           Toast.LENGTH_SHORT).show();
-//               }
-//           });
+       /* lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                updateCurrentView(view, position, data);
+            }
+        });*/
+    }
+
+    private void updateCurrentView(View view, int position, List<Map<String, Object>> data) {
+        if (view != currentView) {
+            dismissCurrentView();
+
+            getTitle(view).setMaxLines(20);
+            TextView desc = getDescription(view);
+            desc.setVisibility(View.VISIBLE);
+            if ("".equals(data.get(position).get("description"))) {
+                desc.setText("<no description>");
+            }
+
+            currentView = view;
+        }
+    }
+
+    private void dismissCurrentView() {
+        if (currentView != null) {
+            getTitle(currentView).setLines(1);
+            getDescription(currentView).setVisibility(View.GONE);
+            currentView = null;
+        }
     }
 
     private TextView getTitle(View itemView) {
