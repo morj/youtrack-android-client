@@ -1,51 +1,76 @@
 package jetbrains.android.client;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.*;
+import android.preference.PreferenceManager;
+import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.*;
 import jetbrains.android.data.RequestFailedException;
 import jetbrains.android.data.YouTrackDAO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class YouTrackActivity extends ListActivity {
-    private static final String BASE_URI = "http://youtrack.jetbrains.net";
+    private static final int SUCCESS_CODE = 200;
     private View currentView = null;
+    private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+    private final YouTrackDAO dao = new YouTrackDAO();
+    private final String[] from = new String[]{"title", "description"};
+    private final int[] to = new int[]{R.id.title, R.id.description};
+    private SimpleAdapter dataAdapter;
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        for (MenuItem item : MenuItem.values()) {
-            menu.add(Menu.NONE, item.id, item.order, item.titleId);
-        }
+        getMenuInflater().inflate(R.menu.youtrack_menu, menu);
         return super.onCreateOptionsMenu(menu);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @Override
     public boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
-        return super.onMenuItemSelected(featureId, item);    //To change body of overridden methods use File | Settings | File Templates.
+
+        switch (item.getItemId()) {
+            case R.id.quit_item:
+                finish();
+                return true;
+            case R.id.update_item:
+                updateData();
+                return true;
+            case R.id.options_item:
+                Intent preferencesIntent = new Intent().setClass(this, YouTrackPreference.class);
+                //Call subactivity with preferences
+                startActivityForResult(preferencesIntent, SUCCESS_CODE);
+                return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+         // The preferences returned if the request code is what we had given
+        // earlier in startSubActivity
+        if(requestCode == SUCCESS_CODE)
+            updateData();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Load default values to preferences on app start
+        PreferenceManager.setDefaultValues(this, R.xml.youtrack_prefrences, false);
 
 //        setListAdapter(new ArrayAdapter<String>(this, R.layout.issue_list_item, new String[]{"first", "second", "third"}));
-        final List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-        try {
-            YouTrackDAO dao = new YouTrackDAO();
-            dao.login(BASE_URI, "app_exception", "app_exception");
-            data.addAll(dao.getIssues("JT", "#unresolved", 0, 10));
-        } catch (RequestFailedException e) {
-            //TODO: Graceful handle
-        }
-        String[] from = new String[]{"title", "description"};
-        int[] to = new int[]{R.id.title, R.id.description};
-        SimpleAdapter adapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
-        setListAdapter(adapter);
+        updateData();
+        dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
+        setListAdapter(dataAdapter);
 
         final ListView lv = getListView();
         final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
@@ -76,7 +101,7 @@ public class YouTrackActivity extends ListActivity {
 //        lv.setTextFilterEnabled(true);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-       /* lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /* lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 updateCurrentView(view, position, data);
@@ -113,6 +138,23 @@ public class YouTrackActivity extends ListActivity {
 
     private TextView getDescription(View itemView) {
         return (TextView) itemView.findViewById(R.id.description);
+    }
+
+    private void updateData() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        try {
+            String login = preferences.getString(getString(R.string.user_name_preference), null);
+            String pass = preferences.getString(getString(R.string.user_password_preference), null);
+            String host = preferences.getString(getString(R.string.host_url_preference_title), null);
+            dao.login(host, login, pass);
+
+            String filter = preferences.getString(getString(R.string.user_filter_preference), null);
+            data.clear();
+            data.addAll(dao.getIssues("JT", filter, 0, 10));
+            dataAdapter.notifyDataSetChanged();
+        } catch (RequestFailedException e) {
+            //TODO: Graceful handle
+        }
     }
 
 }

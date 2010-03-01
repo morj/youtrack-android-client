@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:a="http://schemas.android.com/apk/res/android">
+    <item a:id="@+id/update_item"
+          a:title="@string/update"/>
+    <item a:id="@+id/options_item"
+          a:title="@string/options"/>
+
+
+    <item a:id="@+id/quit_item"
+          a:title="@string/quit"/>
+</menu>
