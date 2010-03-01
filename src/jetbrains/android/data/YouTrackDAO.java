@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class YouTrackDAO {
-    private static final String LOGIN_PATH = "%s/rest/user/login?user=%s&password=%s";
+    private static final String LOGIN_PATH = "%s/rest/user/login?login=%s&password=%s";
     private static final String ISSUES_PATH = "%s/rest/project/issues/%s?filter=%s&after=%d&max=%d";
 
     private HttpClient httpClient;
@@ -57,7 +57,8 @@ public class YouTrackDAO {
         try {
             String uri = String.format(ISSUES_PATH, baseUri, quote(project), quote(query), position, max);
             Log.i(getClass().getSimpleName(), "request: " + uri);
-            HttpResponse response = httpClient.execute(new HttpGet(uri));
+            HttpGet get = new HttpGet(uri);
+            HttpResponse response = httpClient.execute(get);
             assertStatus(response);
 
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
@@ -82,7 +83,7 @@ public class YouTrackDAO {
         } catch (Exception e) {
             throw new RequestFailedException(e);
         } finally {
-//            httpClient.getConnectionManager().shutdown();
+//            httpClient.getConnectionManager().releaseConnection();
         }
         return issues;
     }
