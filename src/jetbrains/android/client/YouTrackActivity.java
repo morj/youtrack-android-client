@@ -76,16 +76,17 @@ public class YouTrackActivity extends ListActivity {
         final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Toast.makeText(YouTrackActivity.this, "Here: " + e1.getY(), Toast.LENGTH_SHORT);
+                Toast.makeText(YouTrackActivity.this, "Here: " + e1.getY(), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
-        /*lv.setOnTouchListener(new View.OnTouchListener() {
+        lv.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return gestureDetector.onTouchEvent(motionEvent);
             }
-        });*/
+        });
 
+/*
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
 
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -98,8 +99,9 @@ public class YouTrackActivity extends ListActivity {
             }
         };
         lv.setOnItemSelectedListener(listener);
+*/
 //        lv.setTextFilterEnabled(true);
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+//        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         /* lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -107,6 +109,12 @@ public class YouTrackActivity extends ListActivity {
                 updateCurrentView(view, position, data);
             }
         });*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        dao.destroy();
+        super.onDestroy();
     }
 
     private void updateCurrentView(View view, int position, List<Map<String, Object>> data) {
