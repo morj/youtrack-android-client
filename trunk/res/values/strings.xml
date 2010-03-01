@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="hello">Hello World, Lop!</string>
+<resources>    
     <string name="app_name">YouTRACK Client</string>
+    <!--Menu Options-->
     <string name="options">Options</string>
     <string name="quit">Quit</string>
     <string name="reports">Reports</string>
+    <string name="update">Update</string>
+    <!--Preferences-->
+        <!--Server Categoty-->
+    <string name="server_preference_category">Host settings</string>
+    <string name="host_url_preference_title">Host</string>
+    <string name="host_url_preference_summary">Host name of your YouTRACK installation</string>
+        <!--User Categoty-->
+    <string name="user_preference_category">User settings</string>
+    <string name="user_name_preference">Login</string>
+    <string name="user_password_preference">Password</string>
+    <string name="user_filter_preference">Search filter</string>
 </resources>
