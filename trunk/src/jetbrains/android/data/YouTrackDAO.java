@@ -1,7 +1,6 @@
 package jetbrains.android.data;
 
 import android.util.Log;
-import com.sun.deploy.net.HttpUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -45,10 +44,9 @@ public class YouTrackDAO {
             HttpPost post = new HttpPost(uri);
             HttpResponse response = httpClient.execute(post);
             assertStatus(response);
+            post.abort();
         } catch (IOException e) {
             throw new RequestFailedException(e);
-        } finally {
-//            httpClient.getConnectionManager().shutdown();
         }
     }
 
@@ -82,12 +80,13 @@ public class YouTrackDAO {
             }
         } catch (Exception e) {
             throw new RequestFailedException(e);
-        } finally {
-//            httpClient.getConnectionManager().releaseConnection();
         }
         return issues;
     }
 
+    public void destroy() {
+//        httpClient.getConnectionManager().shutdown();
+    }
 
     private void assertStatus(HttpResponse response) throws RequestFailedException {
         int status = response.getStatusLine().getStatusCode();
