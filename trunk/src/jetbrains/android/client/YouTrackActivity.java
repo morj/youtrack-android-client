@@ -41,7 +41,7 @@ public class YouTrackActivity extends ListActivity {
                 finish();
                 return true;
             case R.id.update_item:
-                updateData();
+                updateData(true);
                 return true;
             case R.id.options_item:
                 Intent preferencesIntent = new Intent().setClass(this, YouTrackPreference.class);
@@ -58,7 +58,7 @@ public class YouTrackActivity extends ListActivity {
          // The preferences returned if the request code is what we had given
         // earlier in startSubActivity
         if(requestCode == SUCCESS_CODE)
-            updateData();
+            updateData(true);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class YouTrackActivity extends ListActivity {
         PreferenceManager.setDefaultValues(this, R.xml.youtrack_prefrences, false);
 
 //        setListAdapter(new ArrayAdapter<String>(this, R.layout.issue_list_item, new String[]{"first", "second", "third"}));
-        updateData();
+        updateData(false);
         dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
         setListAdapter(dataAdapter);
 
@@ -140,7 +140,7 @@ public class YouTrackActivity extends ListActivity {
         return (TextView) itemView.findViewById(R.id.description);
     }
 
-    private void updateData() {
+    private void updateData(boolean notify) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         try {
             String login = preferences.getString(getString(R.string.user_name_preference), null);
@@ -151,7 +151,8 @@ public class YouTrackActivity extends ListActivity {
             String filter = preferences.getString(getString(R.string.user_filter_preference), null);
             data.clear();
             data.addAll(dao.getIssues("JT", filter, 0, 10));
-            dataAdapter.notifyDataSetChanged();
+            if(notify)
+                dataAdapter.notifyDataSetChanged();
         } catch (RequestFailedException e) {
             //TODO: Graceful handle
         }
