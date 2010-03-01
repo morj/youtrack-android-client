@@ -27,12 +27,6 @@ public class YouTrackDAO {
     private HttpClient httpClient;
     private String baseUri;
 
-    public boolean isLoggedIn() {
-        return loggedIn;
-    }
-
-    private boolean loggedIn = false;
-
     public YouTrackDAO() {
         httpClient = new DefaultHttpClient();
     }
@@ -85,7 +79,7 @@ public class YouTrackDAO {
     }
 
     public void destroy() {
-//        httpClient.getConnectionManager().shutdown();
+        httpClient.getConnectionManager().shutdown();
     }
 
     private void assertStatus(HttpResponse response) throws RequestFailedException {
@@ -93,7 +87,6 @@ public class YouTrackDAO {
         if (status >= 300) {
             throw new RequestFailedException(status + ": " + response.getStatusLine().getReasonPhrase());
         }
-        loggedIn = true;
     }
 
     private String quote(String value) {
