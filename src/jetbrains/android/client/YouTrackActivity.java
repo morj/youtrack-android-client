@@ -1,6 +1,7 @@
 package jetbrains.android.client;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class YouTrackActivity extends ListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.youtrack_menu, menu);
+        getMenuInflater().inflate(R.menu.youtrack_menu, menu);        
         return super.onCreateOptionsMenu(menu);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
@@ -42,6 +43,9 @@ public class YouTrackActivity extends ListActivity {
                 return true;
             case R.id.update_item:
                 updateData(true);
+                return true;
+            case R.id.filter_item:
+                onSearchRequested();
                 return true;
             case R.id.options_item:
                 Intent preferencesIntent = new Intent().setClass(this, YouTrackPreference.class);
@@ -59,6 +63,20 @@ public class YouTrackActivity extends ListActivity {
         // earlier in startSubActivity
         if(requestCode == SUCCESS_CODE)
             updateData(true);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        String query = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_filter_preference), null);
+        startSearch(query, false, null, false);
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            updateQuery(true, intent.getStringExtra(SearchManager.QUERY));
+        }
     }
 
     @Override
@@ -157,13 +175,21 @@ public class YouTrackActivity extends ListActivity {
             dao.login(host, login, pass);
 
             String filter = preferences.getString(getString(R.string.user_filter_preference), null);
-            data.clear();
-            data.addAll(dao.getIssues("JT", filter, 0, 10));
-            if(notify)
-                dataAdapter.notifyDataSetChanged();
+            updateQuery(notify, filter);
         } catch (RequestFailedException e) {
             //TODO: Graceful handle
         }
+    }
+
+    private void updateQuery(boolean notify, String filter) {
+        data.clear();
+        try {
+            data.addAll(dao.getIssues("JT", filter, 0, 10));
+        } catch (RequestFailedException ignore) {
+            //ignore
+        }
+        if(notify)
+            dataAdapter.notifyDataSetChanged();
     }
 
 }

@@ -6,6 +6,7 @@
     <string name="quit">Quit</string>
     <string name="reports">Reports</string>
     <string name="update">Update</string>
+    <string name="query">Query</string>
     <!--Preferences-->
         <!--Server Categoty-->
     <string name="server_preference_category">Host settings</string>
