@@ -5,7 +5,10 @@
           a:title="@string/update"/>
     <item a:id="@+id/options_item"
           a:title="@string/options"/>
-
+    <item a:id="@+id/filter_item"
+          a:title="@string/query"
+          a:icon="@android:drawable/ic_search_category_default"
+          a:alphabeticShortcut="115"/>
 
     <item a:id="@+id/quit_item"
           a:title="@string/quit"/>
