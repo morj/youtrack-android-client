@@ -17,4 +17,8 @@
     <string name="user_name_preference">Login</string>
     <string name="user_password_preference">Password</string>
     <string name="user_filter_preference">Search filter</string>
+
+    <!-- Search -->
+    <string name="search_label">YouTrack</string>
+    <string name="search_hint">all issues</string>
 </resources>
