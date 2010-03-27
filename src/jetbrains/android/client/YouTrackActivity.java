@@ -117,7 +117,7 @@ public class YouTrackActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        dao.destroy();
+//        dao.destroy();
         super.onDestroy();
     }
 
