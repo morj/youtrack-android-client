@@ -37,6 +37,10 @@ public final class R {
         public static final int query=0x7f050005;
         public static final int quit=0x7f050002;
         public static final int reports=0x7f050003;
+        public static final int search_hint=0x7f05000e;
+        /**  Search 
+         */
+        public static final int search_label=0x7f05000d;
         /** Preferences
 Server Categoty
          */
@@ -50,6 +54,7 @@ Server Categoty
         public static final int user_preference_category=0x7f050009;
     }
     public static final class xml {
-        public static final int youtrack_prefrences=0x7f040000;
+        public static final int searchable=0x7f040000;
+        public static final int youtrack_prefrences=0x7f040001;
     }
 }
