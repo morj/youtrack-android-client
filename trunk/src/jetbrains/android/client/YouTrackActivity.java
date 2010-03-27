@@ -1,6 +1,7 @@
 package jetbrains.android.client;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +11,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class YouTrackActivity extends Activity {
+public class YouTrackActivity extends ListActivity {
     private static final int SUCCESS_CODE = 200;
     private static final YouTrackDAO dao = new YouTrackDAO();
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
@@ -45,10 +47,9 @@ public class YouTrackActivity extends Activity {
         updateQuery(false, false);
 
         dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
-        final ListView lv = new ListView(this);
+        final ListView lv = getListView();
 
         lv.setAdapter(dataAdapter);
-        setContentView(lv);
 
         final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
             @Override
@@ -60,6 +61,15 @@ public class YouTrackActivity extends Activity {
         lv.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+                Intent viewIssue = new Intent()
+                        .setClass(YouTrackActivity.this, IssueActivity.class)
+                        .setAction(Intent.ACTION_VIEW);
+                startActivity(viewIssue);
             }
         });
     }
