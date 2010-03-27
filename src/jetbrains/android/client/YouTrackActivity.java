@@ -22,8 +22,8 @@ import java.util.Map;
 
 public class YouTrackActivity extends Activity {
     private static final int SUCCESS_CODE = 200;
+    private static final YouTrackDAO dao = new YouTrackDAO();
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-    private final YouTrackDAO dao = new YouTrackDAO();
     private final String[] from = new String[]{"title", "description"};
     private final int[] to = new int[]{R.id.title, R.id.description};
     private SimpleAdapter dataAdapter;
@@ -42,7 +42,7 @@ public class YouTrackActivity extends Activity {
         } else {
             query = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_filter_preference), "");
         }
-        updateQuery(false);
+        updateQuery(false, false);
 
         dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
         final ListView lv = new ListView(this);
@@ -68,7 +68,7 @@ public class YouTrackActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             this.query = intent.getStringExtra(SearchManager.QUERY);
-            updateQuery(true);
+            updateQuery(true, false);
         }
     }
 
@@ -85,7 +85,7 @@ public class YouTrackActivity extends Activity {
                 finish();
                 return true;
             case R.id.update_item:
-                updateQuery(true);
+                updateQuery(true, true);
                 return true;
             case R.id.filter_item:
                 onSearchRequested();
@@ -111,7 +111,6 @@ public class YouTrackActivity extends Activity {
 
     @Override
     public boolean onSearchRequested() {
-        String query = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_filter_preference), null);
         startSearch(query, false, null, false);
         return true;
     }
@@ -134,14 +133,14 @@ public class YouTrackActivity extends Activity {
         }
     }
 
-    private void updateQuery(boolean notify) {
+    private void updateQuery(boolean refreshView, boolean reload) {
         data.clear();
         try {
-            data.addAll(dao.getIssues("JT", query, 0, 10));
+            data.addAll(dao.getIssues("JT", query, 0, 10, reload));
         } catch (RequestFailedException ignore) {
             //ignore
         }
-        if (notify) {
+        if (refreshView) {
             dataAdapter.notifyDataSetChanged();
         }
     }

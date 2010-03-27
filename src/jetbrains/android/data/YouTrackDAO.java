@@ -27,6 +27,8 @@ public class YouTrackDAO {
     private HttpClient httpClient;
     private String baseUri;
 
+    private Cache<List<Map<String, Object>>> cache = new CaseInsesitiveCache<List<Map<String, Object>>>(5 * 60 * 1000, 10);
+
     public YouTrackDAO() {
         httpClient = new DefaultHttpClient();
     }
@@ -44,7 +46,17 @@ public class YouTrackDAO {
         }
     }
 
-    public List<Map<String, Object>> getIssues(String project, String query, int position, int max) throws RequestFailedException {
+    public List<Map<String, Object>> getIssues(String project, String query, int position, int max, boolean reload) throws RequestFailedException {
+        String key = (project != null ? project : "") + query + "[" + position + ":" + max + "]";
+        List<Map<String, Object>> issues = !reload ? cache.get(key) : null;
+        if (issues == null) {
+            issues = loadIssues(project, query, position, max);
+            cache.put(key, issues);
+        }
+        return issues;
+    }
+
+    private List<Map<String, Object>> loadIssues(String project, String query, int position, int max) throws RequestFailedException {
         final ArrayList<Map<String, Object>> issues = new ArrayList<Map<String, Object>>();
         try {
             String uri = String.format(ISSUES_PATH, baseUri, quote(project), quote(query), position, max);
@@ -69,7 +81,7 @@ public class YouTrackDAO {
                 }
             });
 
-            for (Map<String, Object> issue: issues) {
+            for (Map<String, Object> issue : issues) {
                 issue.put("title", issue.get("id") + " " + issue.get("summary"));
             }
         } catch (Exception e) {
