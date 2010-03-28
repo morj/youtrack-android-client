@@ -5,6 +5,8 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -47,7 +49,8 @@ public class YouTrackActivity extends ListActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView idView = (TextView) view.findViewById(R.id.issue_id);
                 TextView summaryView = (TextView) view.findViewById(R.id.summary);
-                
+                TextView priorityView = (TextView) view.findViewById(R.id.priority);
+
                 if (isResolved(position)) {
                     idView.setPaintFlags(idView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     idView.setEnabled(false);
@@ -56,6 +59,30 @@ public class YouTrackActivity extends ListActivity {
                     idView.setPaintFlags(idView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
                     idView.setEnabled(true);
                     summaryView.setEnabled(true);
+                }
+
+                String priority = getField(position, "priority");
+                Resources resources = getResources();
+                if ("0".equals(priority)) {
+                    priorityView.setText("M");
+                    priorityView.setTextColor(resources.getColor(R.color.priority_minor));
+                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_minor));                    
+                } else if ("2".equals(priority)) {
+                    priorityView.setText("M");
+                    priorityView.setTextColor(resources.getColor(R.color.priority_major));
+                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_major));
+                } else if ("3".equals(priority)) {
+                    priorityView.setText("C");
+                    priorityView.setTextColor(resources.getColor(R.color.priority_critical));
+                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_critical));
+                } else if ("4".equals(priority)) {
+                    priorityView.setText("S");
+                    priorityView.setTextColor(resources.getColor(R.color.priority_showStopper));
+                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_showStopper));
+                } else {
+                    priorityView.setText("N");
+                    priorityView.setTextColor(resources.getColor(R.color.priority_normal));
+                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_normal));
                 }
                 return view;
             }
