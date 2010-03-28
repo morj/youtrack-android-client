@@ -1,20 +1,15 @@
 package jetbrains.android.client;
 
-import android.app.Activity;
+import android.*;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.GestureDetector;
-import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.view.*;
+import android.widget.*;
 import jetbrains.android.data.RequestFailedException;
 import jetbrains.android.data.YouTrackDAO;
 
@@ -26,8 +21,8 @@ public class YouTrackActivity extends ListActivity {
     private static final int SUCCESS_CODE = 200;
     private static final YouTrackDAO dao = new YouTrackDAO();
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-    private final String[] from = new String[]{"title", "description"};
-    private final int[] to = new int[]{R.id.title, R.id.description};
+    private final String[] from = new String[]{"id", "summary"};
+    private final int[] to = new int[]{R.id.issue_id, R.id.summary};
     private SimpleAdapter dataAdapter;
     private String query;
 
@@ -46,7 +41,52 @@ public class YouTrackActivity extends ListActivity {
         }
         updateQuery(false, false);
 
-        dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to);
+        dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView idView = (TextView) view.findViewById(R.id.issue_id);
+                TextView summaryView = (TextView) view.findViewById(R.id.summary);
+                
+                if (isResolved(position)) {
+                    idView.setPaintFlags(idView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    idView.setEnabled(false);
+                    summaryView.setEnabled(false);
+                } else {
+                    idView.setPaintFlags(idView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                    idView.setEnabled(true);
+                    summaryView.setEnabled(true);
+                }
+                return view;
+            }
+
+            public boolean isResolved(int position) {
+                String state = getField(position, "state");
+                // TODO: remove this hardcode when http://youtrack.jetbrains.net/issue/JT-5206 resolved
+                return state != null &&
+                        (  "Can't Reproduce".equalsIgnoreCase(state)
+                        || "Duplicate".equalsIgnoreCase(state)
+                        || "Fixed".equalsIgnoreCase(state)
+                        || "Won't fix".equalsIgnoreCase(state)
+                        || "To be discussed".equalsIgnoreCase(state)
+                        || "Incomplete".equalsIgnoreCase(state)
+                        || "Obsolete".equalsIgnoreCase(state)
+                        || "Verified".equalsIgnoreCase(state));
+            }
+
+            public Map<String, Object> getItem(int position) {
+                return (Map<String, Object>) super.getItem(position);
+            }
+
+            public<T> T getField(int position, String fieldName) {
+                Map<String, Object> item = getItem(position);
+                Object field = null;
+                if (item != null) {
+                    field = item.get(fieldName);
+                }
+                return (T) field;
+            }
+        };
         final ListView lv = getListView();
 
         lv.setAdapter(dataAdapter);
