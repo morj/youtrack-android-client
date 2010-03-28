@@ -46,29 +46,31 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f060000;
-        public static final int host_url_preference_summary=0x7f060008;
-        public static final int host_url_preference_title=0x7f060007;
+        public static final int host_url_preference_summary=0x7f060009;
+        public static final int host_url_preference_title=0x7f060008;
         /** Menu Options
          */
         public static final int options=0x7f060001;
+        /** Preferences
+         */
+        public static final int preferences_label=0x7f060006;
         public static final int query=0x7f060005;
         public static final int quit=0x7f060002;
         public static final int reports=0x7f060003;
-        public static final int search_hint=0x7f06000e;
+        public static final int search_hint=0x7f06000f;
         /**  Search 
          */
-        public static final int search_label=0x7f06000d;
-        /** Preferences
-Server Categoty
+        public static final int search_label=0x7f06000e;
+        /** Server Categoty
          */
-        public static final int server_preference_category=0x7f060006;
+        public static final int server_preference_category=0x7f060007;
         public static final int update=0x7f060004;
-        public static final int user_filter_preference=0x7f06000c;
-        public static final int user_name_preference=0x7f06000a;
-        public static final int user_password_preference=0x7f06000b;
+        public static final int user_filter_preference=0x7f06000d;
+        public static final int user_name_preference=0x7f06000b;
+        public static final int user_password_preference=0x7f06000c;
         /** User Categoty
          */
-        public static final int user_preference_category=0x7f060009;
+        public static final int user_preference_category=0x7f06000a;
     }
     public static final class xml {
         public static final int searchable=0x7f040000;

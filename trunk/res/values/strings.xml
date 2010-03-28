@@ -8,6 +8,7 @@
     <string name="update">Update</string>
     <string name="query">Query</string>
     <!--Preferences-->
+    <string name="preferences_label">YouTRACK Preferences</string>    
         <!--Server Categoty-->
     <string name="server_preference_category">Host settings</string>
     <string name="host_url_preference_title">Host</string>
