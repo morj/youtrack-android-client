@@ -1,13 +1,9 @@
 package jetbrains.android.client;
 
-import android.*;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.*;
@@ -23,8 +19,6 @@ public class YouTrackActivity extends ListActivity {
     private static final int SUCCESS_CODE = 200;
     private static final YouTrackDAO dao = new YouTrackDAO();
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-    private final String[] from = new String[]{"id", "summary"};
-    private final int[] to = new int[]{R.id.issue_id, R.id.summary};
     private SimpleAdapter dataAdapter;
     private String query;
 
@@ -43,93 +37,10 @@ public class YouTrackActivity extends ListActivity {
         }
         updateQuery(false, false);
 
-        dataAdapter = new SimpleAdapter(this, data, R.layout.issue_list_item, from, to) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView idView = (TextView) view.findViewById(R.id.issue_id);
-                TextView summaryView = (TextView) view.findViewById(R.id.summary);
-                TextView priorityView = (TextView) view.findViewById(R.id.priority);
-
-                if (isResolved(position)) {
-                    idView.setPaintFlags(idView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    idView.setEnabled(false);
-                    summaryView.setEnabled(false);
-                } else {
-                    idView.setPaintFlags(idView.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                    idView.setEnabled(true);
-                    summaryView.setEnabled(true);
-                }
-
-                String priority = getField(position, "priority");
-                Resources resources = getResources();
-                if ("0".equals(priority)) {
-                    priorityView.setText("M");
-                    priorityView.setTextColor(resources.getColor(R.color.priority_minor));
-                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_minor));                    
-                } else if ("2".equals(priority)) {
-                    priorityView.setText("M");
-                    priorityView.setTextColor(resources.getColor(R.color.priority_major));
-                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_major));
-                } else if ("3".equals(priority)) {
-                    priorityView.setText("C");
-                    priorityView.setTextColor(resources.getColor(R.color.priority_critical));
-                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_critical));
-                } else if ("4".equals(priority)) {
-                    priorityView.setText("S");
-                    priorityView.setTextColor(resources.getColor(R.color.priority_showStopper));
-                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_showStopper));
-                } else {
-                    priorityView.setText("N");
-                    priorityView.setTextColor(resources.getColor(R.color.priority_normal));
-                    priorityView.setBackgroundColor(resources.getColor(R.color.priority_background_normal));
-                }
-                return view;
-            }
-
-            public boolean isResolved(int position) {
-                String state = getField(position, "state");
-                // TODO: remove this hardcode when http://youtrack.jetbrains.net/issue/JT-5206 resolved
-                return state != null &&
-                        (  "Can't Reproduce".equalsIgnoreCase(state)
-                        || "Duplicate".equalsIgnoreCase(state)
-                        || "Fixed".equalsIgnoreCase(state)
-                        || "Won't fix".equalsIgnoreCase(state)
-                        || "To be discussed".equalsIgnoreCase(state)
-                        || "Incomplete".equalsIgnoreCase(state)
-                        || "Obsolete".equalsIgnoreCase(state)
-                        || "Verified".equalsIgnoreCase(state));
-            }
-
-            public Map<String, Object> getItem(int position) {
-                return (Map<String, Object>) super.getItem(position);
-            }
-
-            public<T> T getField(int position, String fieldName) {
-                Map<String, Object> item = getItem(position);
-                Object field = null;
-                if (item != null) {
-                    field = item.get(fieldName);
-                }
-                return (T) field;
-            }
-        };
         final ListView lv = getListView();
-
+        
+        dataAdapter = new IssueListAdapter(this, data);
         lv.setAdapter(dataAdapter);
-
-        final GestureDetector gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                Toast.makeText(YouTrackActivity.this, "Here: " + e1.getY(), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-        lv.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gestureDetector.onTouchEvent(motionEvent);
-            }
-        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
