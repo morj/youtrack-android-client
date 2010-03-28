@@ -11,22 +11,31 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int priority_background=0x7f050001;
-        public static final int priority_normal=0x7f050000;
+        public static final int priority_background_critical=0x7f050007;
+        public static final int priority_background_major=0x7f050005;
+        public static final int priority_background_minor=0x7f050001;
+        public static final int priority_background_normal=0x7f050003;
+        public static final int priority_background_showStopper=0x7f050009;
+        public static final int priority_critical=0x7f050006;
+        public static final int priority_major=0x7f050004;
+        public static final int priority_minor=0x7f050000;
+        public static final int priority_normal=0x7f050002;
+        public static final int priority_showStopper=0x7f050008;
     }
     public static final class drawable {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int filter_item=0x7f080007;
-        public static final int issue_comments=0x7f080004;
-        public static final int issue_description=0x7f080003;
-        public static final int issue_id=0x7f080000;
-        public static final int issue_properties=0x7f080002;
-        public static final int options_item=0x7f080006;
-        public static final int quit_item=0x7f080008;
-        public static final int summary=0x7f080001;
-        public static final int update_item=0x7f080005;
+        public static final int filter_item=0x7f080008;
+        public static final int issue_comments=0x7f080005;
+        public static final int issue_description=0x7f080004;
+        public static final int issue_id=0x7f080001;
+        public static final int issue_properties=0x7f080003;
+        public static final int options_item=0x7f080007;
+        public static final int priority=0x7f080000;
+        public static final int quit_item=0x7f080009;
+        public static final int summary=0x7f080002;
+        public static final int update_item=0x7f080006;
     }
     public static final class layout {
         public static final int issue_list_item=0x7f030000;
