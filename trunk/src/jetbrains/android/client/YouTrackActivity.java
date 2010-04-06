@@ -94,6 +94,7 @@ public class YouTrackActivity extends ListActivity {
         // earlier in startSubActivity
         if (requestCode == SUCCESS_CODE) {
             login();
+            updateQuery(true, true);
         }
     }
 
