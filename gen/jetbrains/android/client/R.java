@@ -26,20 +26,22 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int filter_item=0x7f080008;
-        public static final int issue_comments=0x7f080005;
-        public static final int issue_description=0x7f080004;
+        public static final int description=0x7f080004;
+        public static final int filter_item=0x7f080009;
+        public static final int issue_comments=0x7f080006;
+        public static final int issue_description=0x7f080003;
         public static final int issue_id=0x7f080001;
-        public static final int issue_properties=0x7f080003;
-        public static final int options_item=0x7f080007;
+        public static final int issue_properties=0x7f080005;
+        public static final int options_item=0x7f080008;
         public static final int priority=0x7f080000;
-        public static final int quit_item=0x7f080009;
+        public static final int quit_item=0x7f08000a;
         public static final int summary=0x7f080002;
-        public static final int update_item=0x7f080006;
+        public static final int update_item=0x7f080007;
     }
     public static final class layout {
-        public static final int issue_list_item=0x7f030000;
-        public static final int issue_properties=0x7f030001;
+        public static final int issue_field=0x7f030000;
+        public static final int issue_list_item=0x7f030001;
+        public static final int issue_properties=0x7f030002;
     }
     public static final class menu {
         public static final int youtrack_menu=0x7f070000;

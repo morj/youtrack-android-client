@@ -4,22 +4,27 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.*;
-import android.widget.*;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 import jetbrains.android.data.RequestFailedException;
 import jetbrains.android.data.YouTrackDAO;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class YouTrackActivity extends ListActivity {
     private static final int SUCCESS_CODE = 200;
-    private static final YouTrackDAO dao = new YouTrackDAO();
+    public static final YouTrackDAO dao = new YouTrackDAO();
     private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-    private SimpleAdapter dataAdapter;
+    private IssueListAdapter dataAdapter;
     private String query;
 
 
@@ -38,16 +43,23 @@ public class YouTrackActivity extends ListActivity {
         updateQuery(false, false);
 
         final ListView lv = getListView();
-        
+
         dataAdapter = new IssueListAdapter(this, data);
         lv.setAdapter(dataAdapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView adapterView, View view, int position, long id) {
-                Intent viewIssue = new Intent()
-                        .setClass(YouTrackActivity.this, IssueActivity.class)
-                        .setAction(Intent.ACTION_VIEW);
-                startActivity(viewIssue);
+                String issueId = dataAdapter.getIssueId(position);
+                if (issueId != null) {
+                    Uri data = dao.getIssueUri(issueId);
+                    Intent viewIssue = new Intent()
+                            .setClass(YouTrackActivity.this, IssueActivity.class)
+                            .setAction(Intent.ACTION_VIEW)
+                            .setData(data);
+                    startActivity(viewIssue);
+                } else {
+                    Toast.makeText(YouTrackActivity.this, "Unknown issue", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
