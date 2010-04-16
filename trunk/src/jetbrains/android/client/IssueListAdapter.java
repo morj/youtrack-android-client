@@ -77,6 +77,10 @@ class IssueListAdapter extends SimpleAdapter {
                 || "Verified".equalsIgnoreCase(state));
     }
 
+    public String getIssueId(int position) {
+        return getField(position, "id");
+    }
+
     @Override
     public Map<String, Object> getItem(int position) {
         return (Map<String, Object>) super.getItem(position);
