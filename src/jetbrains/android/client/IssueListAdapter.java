@@ -70,8 +70,7 @@ class IssueListAdapter extends SimpleAdapter {
                 (  "Can't Reproduce".equalsIgnoreCase(state)
                 || "Duplicate".equalsIgnoreCase(state)
                 || "Fixed".equalsIgnoreCase(state)
-                || "Won't fix".equalsIgnoreCase(state)
-                || "To be discussed".equalsIgnoreCase(state)
+                || "Won't fix".equalsIgnoreCase(state)                
                 || "Incomplete".equalsIgnoreCase(state)
                 || "Obsolete".equalsIgnoreCase(state)
                 || "Verified".equalsIgnoreCase(state));
