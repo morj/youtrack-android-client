@@ -15,7 +15,6 @@ import android.widget.Toast;
 import jetbrains.android.data.RequestFailedException;
 import jetbrains.android.data.YouTrackDAO;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,16 +29,12 @@ public class YouTrackActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);        
         // Load default values to preferences on app start
         PreferenceManager.setDefaultValues(this, R.xml.youtrack_prefrences, false);
         login();
-
-        if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
-            query = getIntent().getStringExtra(SearchManager.QUERY);
-        } else {
-            query = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_filter_preference), "");
-        }
+        
+        query = PreferenceManager.getDefaultSharedPreferences(this).getString(getString(R.string.user_filter_preference), "");
         updateQuery(false, false);
 
         final ListView lv = getListView();
@@ -61,7 +56,7 @@ public class YouTrackActivity extends ListActivity {
                     Toast.makeText(YouTrackActivity.this, "Unknown issue", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });        
     }
 
     @Override
@@ -137,7 +132,7 @@ public class YouTrackActivity extends ListActivity {
     private void updateQuery(boolean refreshView, boolean reload) {
         data.clear();
         try {
-            data.addAll(dao.getIssues("JT", query, 0, 10, reload));
+            data.addAll(dao.getIssues("JT", query, 0, 20, reload));
         } catch (RequestFailedException ignore) {
             //ignore
         }
