@@ -1,1 +1,2 @@
-Issue tracker moved [http://youtrack-android.myjetbrains.com here].
+==Enter the [http://youtrack-android.myjetbrains.com tracker]==
+We use [http://jetbrains.com/youtrack YouTrack] in the clouds to control our issues.
